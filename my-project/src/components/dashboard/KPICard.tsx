@@ -24,6 +24,7 @@ export function KPICard({ label, value, change, trend, format = 'number' }: KPIC
 
   useEffect(() => {
     if (!isVisible) return
+    // Animate the main value
     let valueInterval: NodeJS.Timeout | undefined
     const duration = 1500
     const steps = 60
@@ -39,12 +40,14 @@ export function KPICard({ label, value, change, trend, format = 'number' }: KPIC
       setAnimatedValue(current)
     }, duration / steps)
 
+    // Animate the change value
     let changeInterval: NodeJS.Timeout | undefined
     const changeDuration = 1000
     const changeSteps = 40
     const changeIncrement = change / changeSteps
     let changeCurrent = 0
 
+    // Delay a bit for effect
     const changeTimeout = setTimeout(() => {
       changeInterval = setInterval(() => {
         changeCurrent += changeIncrement
@@ -60,9 +63,9 @@ export function KPICard({ label, value, change, trend, format = 'number' }: KPIC
     }, 800)
 
     return () => {
-      clearTimeout(changeTimeout)
       if (valueInterval) clearInterval(valueInterval)
       if (changeInterval) clearInterval(changeInterval)
+      clearTimeout(changeTimeout)
     }
   }, [value, change, isVisible])
 
@@ -134,7 +137,29 @@ export function KPICard({ label, value, change, trend, format = 'number' }: KPIC
         </div>
         <span className="ml-3 text-sm text-gray-500 font-medium">vs last month</span>
       </div>
-      {/* Decorative divs omitted for brevity */}
+
+      {/* Floating Decorative Elements */}
+      <div className={`absolute -top-2 -right-2 w-16 h-16 rounded-full blur-xl animate-pulse transition-colors duration-500 ${
+        trend === 'up' ? 'bg-gradient-to-br from-green-200/20 to-emerald-200/20' :
+        trend === 'down' ? 'bg-gradient-to-br from-red-200/20 to-rose-200/20' :
+        'bg-gradient-to-br from-gray-200/20 to-slate-200/20'
+      }`} />
+      
+      <div className={`absolute -bottom-2 -left-2 w-12 h-12 rounded-full blur-xl animate-pulse delay-1000 transition-colors duration-500 ${
+        trend === 'up' ? 'bg-gradient-to-br from-emerald-200/20 to-teal-200/20' :
+        trend === 'down' ? 'bg-gradient-to-br from-rose-200/20 to-pink-200/20' :
+        'bg-gradient-to-br from-slate-200/20 to-gray-200/20'
+      }`} />
+
+      {/* Trend-based Border Glow */}
+      <div className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${
+        trend === 'up' ? 'bg-gradient-to-r from-green-500/5 via-emerald-500/5 to-teal-500/5' :
+        trend === 'down' ? 'bg-gradient-to-r from-red-500/5 via-rose-500/5 to-pink-500/5' :
+        'bg-gradient-to-r from-gray-500/5 via-slate-500/5 to-zinc-500/5'
+      }`} />
+
+      {/* Shimmer Effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
     </div>
   )
 }
