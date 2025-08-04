@@ -24,7 +24,8 @@ Check out the live dashboard deployed on Vercel:
 
 ## 📸 Screenshots
 
-![Dashboard Overview](./screenshots/dashboard-overview.png)  
+![Dashboard Overview](./Screenshot%202025-08-04%20130040.png)
+
 *Overview page with KPI cards and charts*
 
 ![Analytics Page](./screenshots/analytics-page.png)  
