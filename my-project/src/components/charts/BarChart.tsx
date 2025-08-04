@@ -22,7 +22,7 @@ interface BarChartProps {
 
 const CustomTooltip = (props: TooltipProps<number, string>) => {
   const { active } = props
-  // TypeScript workaround: forcibly access known runtime shape.
+  // Access payload and label through type assertion
   const payload = (props as { payload?: Array<{ value?: number }> }).payload
   const label = (props as { label?: string }).label
 
@@ -50,7 +50,6 @@ const CustomTooltip = (props: TooltipProps<number, string>) => {
   return null
 }
 
-// Only type what you need for the event.
 interface BarChartMouseEvent {
   activeTooltipIndex?: number | null
 }
@@ -71,6 +70,7 @@ export function BarChart({ data, title, className = '' }: BarChartProps) {
       <h3 className="text-lg font-semibold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent mb-4">
         {title}
       </h3>
+
       <div className="h-full w-full">
         <ResponsiveContainer width="100%" height={240}>
           <RechartsBarChart
@@ -78,23 +78,48 @@ export function BarChart({ data, title, className = '' }: BarChartProps) {
             onMouseMove={onMouseMoveHandler}
             onMouseLeave={() => setHoveredIndex(null)}
           >
-            {/* ... all your defs and gradients remain unchanged ... */}
+            <defs>
+              <linearGradient id="barGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#10b981" stopOpacity={1} />
+                <stop offset="50%" stopColor="#059669" stopOpacity={0.9} />
+                <stop offset="100%" stopColor="#047857" stopOpacity={0.8} />
+              </linearGradient>
+              <linearGradient id="barHoverGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#34d399" stopOpacity={1} />
+                <stop offset="50%" stopColor="#10b981" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#059669" stopOpacity={0.9} />
+              </linearGradient>
+              <linearGradient id="gridGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#e5e7eb" />
+                <stop offset="100%" stopColor="#d1d5db" />
+              </linearGradient>
+              <filter id="barGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                <feMerge> 
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <filter id="barShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="4" stdDeviation="3" floodColor="rgba(16, 185, 129, 0.25)" />
+              </filter>
+            </defs>
 
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="url(#gridGradient)"
+            <CartesianGrid 
+              strokeDasharray="3 3" 
+              stroke="url(#gridGradient)" 
               strokeOpacity={0.3}
               className="animate-pulse"
             />
-            <XAxis
-              dataKey="name"
+            <XAxis 
+              dataKey="name" 
               stroke="#6b7280"
               fontSize={12}
               tick={{ fill: '#6b7280', fontSize: 12 }}
               tickLine={{ stroke: '#d1d5db' }}
               axisLine={{ stroke: '#e5e7eb' }}
             />
-            <YAxis
+            <YAxis 
               stroke="#6b7280"
               fontSize={12}
               tick={{ fill: '#6b7280', fontSize: 12 }}
@@ -102,8 +127,8 @@ export function BarChart({ data, title, className = '' }: BarChartProps) {
               axisLine={{ stroke: '#e5e7eb' }}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Bar
-              dataKey="value"
+            <Bar 
+              dataKey="value" 
               radius={[6, 6, 0, 0]}
               animationBegin={0}
               animationDuration={1500}
@@ -127,7 +152,13 @@ export function BarChart({ data, title, className = '' }: BarChartProps) {
           </RechartsBarChart>
         </ResponsiveContainer>
       </div>
-      {/* ...decorative elements unchanged... */}
+
+      {/* Floating Decorative Elements */}
+      <div className="absolute -top-2 -right-2 w-16 h-16 bg-gradient-to-br from-emerald-200/20 to-green-200/20 rounded-full blur-xl animate-pulse" />
+      <div className="absolute -bottom-2 -left-2 w-12 h-12 bg-gradient-to-br from-teal-200/20 to-emerald-200/20 rounded-full blur-xl animate-pulse delay-1000" />
+      
+      {/* Subtle Border Glow */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500/5 via-green-500/5 to-teal-500/5 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
     </div>
   )
 }
