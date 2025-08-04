@@ -41,6 +41,14 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function BarChart({ data, title, className = '' }: BarChartProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
+  const onMouseMoveHandler = (e: any) => {
+    if (e && typeof e.activeTooltipIndex === 'number') {
+      setHoveredIndex(e.activeTooltipIndex)
+    } else {
+      setHoveredIndex(null)
+    }
+  }
+
   return (
     <div className={`relative bg-gradient-to-br from-white via-gray-50/30 to-white rounded-2xl p-6 border border-gray-200/60 shadow-xl hover:shadow-2xl transition-all duration-500 backdrop-blur-sm overflow-hidden ${className}`}>
       {/* Enhanced Title */}
@@ -53,13 +61,7 @@ export function BarChart({ data, title, className = '' }: BarChartProps) {
         <ResponsiveContainer width="100%" height={240}>
           <RechartsBarChart
             data={data}
-            onMouseMove={(e) => {
-              if (e && typeof e.activeTooltipIndex === 'number') {
-                setHoveredIndex(e.activeTooltipIndex)
-              } else {
-                setHoveredIndex(null)
-              }
-            }}
+            onMouseMove={onMouseMoveHandler}
             onMouseLeave={() => setHoveredIndex(null)}
           >
             <defs>
@@ -78,10 +80,10 @@ export function BarChart({ data, title, className = '' }: BarChartProps) {
                 <stop offset="100%" stopColor="#d1d5db" />
               </linearGradient>
               <filter id="barGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-                <feMerge>
-                  <feMergeNode in="coloredBlur" />
-                  <feMergeNode in="SourceGraphic" />
+                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                <feMerge> 
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
                 </feMerge>
               </filter>
               <filter id="barShadow" x="-50%" y="-50%" width="200%" height="200%">
@@ -89,21 +91,21 @@ export function BarChart({ data, title, className = '' }: BarChartProps) {
               </filter>
             </defs>
 
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="url(#gridGradient)"
+            <CartesianGrid 
+              strokeDasharray="3 3" 
+              stroke="url(#gridGradient)" 
               strokeOpacity={0.3}
               className="animate-pulse"
             />
-            <XAxis
-              dataKey="name"
+            <XAxis 
+              dataKey="name" 
               stroke="#6b7280"
               fontSize={12}
               tick={{ fill: '#6b7280', fontSize: 12 }}
               tickLine={{ stroke: '#d1d5db' }}
               axisLine={{ stroke: '#e5e7eb' }}
             />
-            <YAxis
+            <YAxis 
               stroke="#6b7280"
               fontSize={12}
               tick={{ fill: '#6b7280', fontSize: 12 }}
@@ -111,8 +113,8 @@ export function BarChart({ data, title, className = '' }: BarChartProps) {
               axisLine={{ stroke: '#e5e7eb' }}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Bar
-              dataKey="value"
+            <Bar 
+              dataKey="value" 
               radius={[6, 6, 0, 0]}
               animationBegin={0}
               animationDuration={1500}

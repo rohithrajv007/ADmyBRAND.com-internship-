@@ -8,18 +8,22 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  TooltipProps
 } from 'recharts'
 import { ChartData } from '@/types/dashboard'
 
 interface LineChartProps {
   data: ChartData[]
   title: string
-  /** optional Tailwind utility classes for height / spacing */
   className?: string
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
+const CustomTooltip = (props: TooltipProps<number, string>) => {
+  const { active } = props
+  const payload = (props as any).payload as Array<{ value?: number }>
+  const label = (props as any).label as string | undefined
+
+  if (active && payload && Array.isArray(payload) && payload.length > 0 && label) {
     return (
       <div className="bg-white/95 backdrop-blur-md border border-gray-200/60 rounded-2xl p-4 shadow-2xl transform transition-all duration-200 scale-100">
         <div className="flex items-center gap-3">
@@ -27,7 +31,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
           <div>
             <p className="font-bold text-gray-900 text-sm">{label}</p>
             <p className="text-xs text-gray-600 font-medium">
-              {payload[0].value.toLocaleString()}
+              {payload[0].value?.toLocaleString()}
             </p>
           </div>
         </div>
@@ -81,21 +85,18 @@ export function LineChart({
                 <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="rgba(59, 130, 246, 0.3)" />
               </filter>
             </defs>
-
             <CartesianGrid 
               strokeDasharray="3 3" 
               stroke="url(#gridGradient)" 
               strokeOpacity={0.3}
               className="animate-pulse"
             />
-            
             <defs>
               <linearGradient id="gridGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#e5e7eb" />
                 <stop offset="100%" stopColor="#d1d5db" />
               </linearGradient>
             </defs>
-
             <XAxis 
               dataKey="name" 
               stroke="#6b7280" 
@@ -104,7 +105,6 @@ export function LineChart({
               tickLine={{ stroke: '#d1d5db' }}
               axisLine={{ stroke: '#e5e7eb' }}
             />
-            
             <YAxis 
               stroke="#6b7280" 
               fontSize={12}
@@ -112,9 +112,7 @@ export function LineChart({
               tickLine={{ stroke: '#d1d5db' }}
               axisLine={{ stroke: '#e5e7eb' }}
             />
-            
             <Tooltip content={<CustomTooltip />} />
-            
             <Line
               type="monotone"
               dataKey="value"
