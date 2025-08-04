@@ -21,10 +21,10 @@ interface BarChartProps {
 }
 
 const CustomTooltip = (props: TooltipProps<number, string>) => {
-  const { active } = props
-  // Access payload and label through type assertion
-  const payload = (props as { payload?: Array<{ value?: number }> }).payload
-  const label = (props as { label?: string }).label
+  // Accessing payload/label via 'as any' to avoid all TS type errors
+  const active = (props as any).active
+  const payload = (props as any).payload as Array<{ value?: number }> | undefined
+  const label = (props as any).label as string | undefined
 
   if (
     active &&
@@ -40,7 +40,9 @@ const CustomTooltip = (props: TooltipProps<number, string>) => {
           <div>
             <p className="font-bold text-gray-900 text-sm">{label}</p>
             <p className="text-xs text-gray-600 font-medium">
-              {payload[0]?.value?.toLocaleString()}
+              {payload[0]?.value !== undefined
+                ? payload[0].value.toLocaleString()
+                : ""}
             </p>
           </div>
         </div>
@@ -70,7 +72,6 @@ export function BarChart({ data, title, className = '' }: BarChartProps) {
       <h3 className="text-lg font-semibold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent mb-4">
         {title}
       </h3>
-
       <div className="h-full w-full">
         <ResponsiveContainer width="100%" height={240}>
           <RechartsBarChart
