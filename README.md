@@ -28,16 +28,16 @@ Check out the live dashboard deployed on Vercel:
 
 *Overview page with KPI cards and charts*
 
-![Analytics Page](./screenshots/analytics-page.png)  
+![Overview Page](./Screenshot%202025-08-04%20131112.png)  
 *Analytics page featuring an animated bar chart*
 
-![Reports Page](./screenshots/reports-page.png)  
+![Analytics Page](./Screenshot%202025-08-04%20131122.png)  
 *Reports page with pie chart visualization*
 
-![Users Page](./screenshots/users-page.png)  
+![Reports Page](./Screenshot%202025-08-04%20131132.png)  
 *Users page showing recent activities table*
 
-![Trends Page](./screenshots/trends-page.png)  
+![Users Page](./Screenshot%202025-08-04%20131142.png)  
 *Trends page with line chart visualization*
 
 ---
