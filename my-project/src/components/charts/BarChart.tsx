@@ -12,6 +12,10 @@ import {
   Cell,
   TooltipProps,
 } from 'recharts'
+import {
+  NameType,
+  ValueType,
+} from 'recharts/types/component/DefaultTooltipContent'
 import { ChartData } from '@/types/dashboard'
 
 interface BarChartProps {
@@ -20,18 +24,11 @@ interface BarChartProps {
   className?: string
 }
 
-const CustomTooltip = ({
-  active,
-  payload,
-  label,
-}: TooltipProps<number, string>) => {
-  if (
-    active &&
-    payload &&
-    Array.isArray(payload) &&
-    payload.length > 0 &&
-    label
-  ) {
+// Corrected CustomTooltip Component
+const CustomTooltip = (props: TooltipProps<ValueType, NameType>) => {
+  const { active, payload, label } = props
+
+  if (active && payload && payload.length > 0 && label) {
     return (
       <div className="bg-white/95 backdrop-blur-md border border-gray-200/60 rounded-2xl p-4 shadow-2xl">
         <div className="flex items-center gap-3">
@@ -39,9 +36,8 @@ const CustomTooltip = ({
           <div>
             <p className="font-bold text-gray-900 text-sm">{label}</p>
             <p className="text-xs text-gray-600 font-medium">
-              {payload[0]?.value !== undefined
-                ? payload[0].value.toLocaleString()
-                : ''}
+              {/* Using optional chaining for a cleaner expression */}
+              {payload[0]?.value?.toLocaleString()}
             </p>
           </div>
         </div>
@@ -157,7 +153,7 @@ export function BarChart({ data, title, className = '' }: BarChartProps) {
               tickLine={{ stroke: '#d1d5db' }}
               axisLine={{ stroke: '#e5e7eb' }}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(209, 213, 219, 0.3)' }}/>
             <Bar
               dataKey="value"
               radius={[6, 6, 0, 0]}
